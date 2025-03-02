@@ -18,7 +18,7 @@ class SpotAudDownloader:
         self.progress = 0  # Placeholder progress for spotDL
         self.downloading = False  # Flag to track if download is in progress
 
-    def get_progress(self):
+    def simulate_progress(self):
         """Simulate progress for spotDL downloads."""
         self.progress = 0
         self.downloading = True
