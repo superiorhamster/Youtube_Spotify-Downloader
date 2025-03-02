@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/7e3f59fb-5c6a-4869-8523-1997c93f6404)﻿# Youtube_Spotify-Downloader
+![image](https://github.com/user-attachments/assets/7e3f59fb-5c6a-4869-8523-1997c93f6404)﻿# Youtube_Spotify-Downloader<br />
 Download highest-able quality YouTube video/audio and Spotify audio <br />
 Might *not need to install a lot of python's library for now <br />
 
