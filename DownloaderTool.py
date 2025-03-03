@@ -72,7 +72,7 @@ def show_progress_window(downloader, content_type):
     def update_progress():
         """Updates the progress label with the current download progress."""
         progress = downloader.get_progress()
-        if downloader.is_playlist:
+        if hasattr(downloader, 'is_playlist') and downloader.is_playlist:
             progress_label.config(text=f"Queue ({downloader.current_video_index + 1}/{downloader.total_videos}): {progress}%")
         else:
             progress_label.config(text=f"Download Progress: {progress}%")
@@ -190,6 +190,59 @@ def download_multiple_videos():
         # Run the download in a separate thread
         threading.Thread(target=download_in_thread, args=(downloader, "Video")).start()
 
+def download_audio(platform):
+    """Download audio from YouTube or Spotify based on the platform."""
+    url = simpledialog.askstring("Input", "Enter the audio URL:")
+    if not url:
+        messagebox.showerror("Error", "Please enter a URL.")
+        return
+
+    save_path = get_save_path()
+    if not save_path:
+        return
+
+    if platform == 1:
+        # Download from YouTube
+        downloader = YTAudDownloader(url, save_path)
+        content_type = "YouTube Audio"
+        show_progress_window(downloader, content_type)
+        threading.Thread(target=download_in_thread, args=(downloader, content_type)).start()
+    elif platform == 2:
+        # Download from Spotify
+        # Create a "Waiting..." popup window
+        waiting_window = tk.Toplevel(root)
+        waiting_window.title("Waiting...")
+        waiting_window.geometry("200x100")
+        tk.Label(waiting_window, text="Waiting for Spotify download to start...").pack(pady=20)
+
+        def start_spotify_download():
+            """Start the Spotify download and close the waiting window when done."""
+            downloader = SpotAudDownloader(save_path)
+            type = url.split('/')[-2]
+            if type == "track":
+                downloader.download_track(url)
+                content_type = "Spotify Track"
+            elif type == "album":
+                downloader.download_album(url)
+                content_type = "Spotify Album"
+            elif type == "playlist":
+                downloader.download_playlist(url)
+                content_type = "Spotify Playlist"
+            else:
+                messagebox.showerror("Error", "Invalid Spotify URL type")
+                waiting_window.destroy()
+                return
+
+            # Close the waiting window and show the progress window
+            waiting_window.destroy()
+            show_progress_window(downloader, content_type)
+            threading.Thread(target=download_in_thread, args=(downloader, content_type)).start()
+
+        # Start the Spotify download in a separate thread
+        threading.Thread(target=start_spotify_download).start()
+    else:
+        messagebox.showerror("Error", "Invalid platform selected")
+        return
 # GUI Setup
 root = tk.Tk()
 root.title("Downloader UI")

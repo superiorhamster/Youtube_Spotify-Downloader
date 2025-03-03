@@ -88,4 +88,3 @@ class YTAudDownloader:
         with yt_dlp.YoutubeDL(self.ydl_opts) as ydl:
             ydl.download([self.url])
         print('Download Complete!')
-
